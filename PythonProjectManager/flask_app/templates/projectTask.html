@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<title>Project Tasks</title>
+</head>
+<body>
+
+	<div class="container-fluid">
+		<div class="d-flex col-12 col-md-8 mx-auto justify-content-between">
+			<div class="my-3">
+			<h1 class="text-primary">Project: {{current_project.title}}</h1>
+			<h4>Project Lead: {{current_project.leader}}</h4>
+			</div>
+			<div class="my-2 row align-items-center">
+				<p>
+					<a href="/logout" class="btn btn-danger">Logout</a>
+				</p>
+			</div>
+		</div>
+        
+		<div class="col-12 col-md-8 mx-auto">
+            <form action="/projects/{{current_project.project}}/tasks/create" method="post" class="p-4 bg-light text-primary">
+                {% with messages = get_flashed_messages(category_filter=['task']) %}
+                    {% if messages %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>ERROR</strong>
+                            {% for message in messages %}
+                            <p>{{message}}</p>
+                            {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endwith %}
+                <div class="row g-3 my-3">
+                    <div class="col-3">
+                        <label path="ticket" class="py-2">Add a task ticket for the team: </label>
+                        
+                    </div>
+                    <div class="col-6">
+                        <textarea name="ticket" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div>
+                        <input type="hidden" name="creator" value="{{logged_in_user.id}}" class="form-control"/>
+                    </div>
+                    <div>
+                        <input type="hidden" name="project_task" value="{{current_project.project}}" class="form-control"/>
+                    </div>
+                </div>
+                <p class="col-9 text-end">
+                    <a href="/projects" class="btn btn-warning">Cancel</a>
+                    <input type="submit" value="Submit" class="btn btn-primary">
+                </p>
+            </form>
+        </div>
+        <div class="my-3">
+            {% for task in current_tasks %}
+			<p><strong>Added by: {{task.creator}} at {{task.created_at.strftime("%b %-d %Y, %-I:%M %p")}}</strong></p>
+			<p>{{task.ticket}}</p>
+			{% if task.creator == logged_in_user.first_name or current_project.leader == logged_in_user.first_name %}
+				<form action="/projects/{{current_project.project}}/tasks/{{task.id}}/delete" method="post">
+					<input type="submit" value="Completed" class="btn btn-danger mb-3">
+				</form>
+			{% endif %}
+			{% endfor %}
+        </div>
+	</div>
+</body>
+</html>
