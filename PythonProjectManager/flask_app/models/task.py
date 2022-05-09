@@ -36,7 +36,7 @@ class Task:
     
     @classmethod
     def update_task(cls, data):
-        query = "UPDATE tasks SET ticket = %(ticket)s WHERE ide = %(id)s"
+        query = "UPDATE tasks SET ticket = %(ticket)s WHERE id = %(id)s"
         results = connectToMySQL(cls.db_name).query_db(query, data)
         return results
     
