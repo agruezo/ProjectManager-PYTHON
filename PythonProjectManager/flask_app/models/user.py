@@ -58,4 +58,5 @@ class User:
             is_valid= False
         if user['password'] != user['confirm']:
             flash("Passwords don't match","register")
+            is_valid= False
         return is_valid
